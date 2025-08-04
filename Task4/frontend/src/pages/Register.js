@@ -1,15 +1,17 @@
-// src/pages/Register.js
 import React, { useState } from 'react';
 import axios from 'axios';
 
 const Register = () => {
   const [formData, setFormData] = useState({
+    name: '',
     email: '',
     password: '',
   });
   const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
+    
+    console.log("Form Data:", formData);
     setFormData({ 
       ...formData, 
       [e.target.name]: e.target.value 
@@ -31,6 +33,17 @@ const Register = () => {
       <h2>Register</h2>
       {message && <div className="alert alert-info">{message}</div>}
       <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label>Name:</label>
+          <input 
+            type="text" 
+            name="name" 
+            className="form-control" 
+            value={formData.name} 
+            onChange={handleChange} 
+            required 
+          />
+        </div>
         <div className="mb-3">
           <label>Email:</label>
           <input 
@@ -60,3 +73,4 @@ const Register = () => {
 };
 
 export default Register;
+
