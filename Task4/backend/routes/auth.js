@@ -1,9 +1,11 @@
+// backend/routes/auth.js
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+// Registration route
 router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
   try {
@@ -17,11 +19,13 @@ router.post("/register", async (req, res) => {
     if (err.code === "23505") {
       res.status(400).json({ error: "Email already exists" });
     } else {
+      console.error(err);
       res.status(500).json({ error: "Internal server error" });
     }
   }
 });
 
+// Login route
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -38,6 +42,7 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: "2h" });
     res.json({ token, name: user.name });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
