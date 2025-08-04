@@ -1,32 +1,62 @@
-import React, { useState } from "react";
-//import { useNavigate } from "react-router-dom";
-import API from "../api";
+// src/pages/Register.js
+import React, { useState } from 'react';
+import axios from 'axios';
 
-export default function Register() {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
-  const [msg, setMsg] = useState("");
-  //const navigate = useNavigate();
+const Register = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+  const [message, setMessage] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({ 
+      ...formData, 
+      [e.target.name]: e.target.value 
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await API.post("/auth/register", form);
-      setMsg("Registered successfully. You can login now.");
+      const res = await axios.post('http://localhost:5000/api/register', formData);
+      setMessage(res.data.message);
     } catch (err) {
-      setMsg(err.response?.data?.error || "Error occurred.");
+      setMessage(err.response?.data?.error || 'Registration failed');
     }
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: 400 }}>
-      <h3>Register</h3>
-      {msg && <div className="alert alert-info">{msg}</div>}
+    <div className="container mt-5">
+      <h2>Register</h2>
+      {message && <div className="alert alert-info">{message}</div>}
       <form onSubmit={handleSubmit}>
-        <input className="form-control mb-2" placeholder="Name" onChange={e => setForm({ ...form, name: e.target.value })} />
-        <input className="form-control mb-2" placeholder="Email" onChange={e => setForm({ ...form, email: e.target.value })} />
-        <input className="form-control mb-2" placeholder="Password" type="password" onChange={e => setForm({ ...form, password: e.target.value })} />
-        <button className="btn btn-primary w-100">Register</button>
+        <div className="mb-3">
+          <label>Email:</label>
+          <input 
+            type="email" 
+            name="email" 
+            className="form-control" 
+            value={formData.email} 
+            onChange={handleChange} 
+            required 
+          />
+        </div>
+        <div className="mb-3">
+          <label>Password:</label>
+          <input 
+            type="password" 
+            name="password" 
+            className="form-control" 
+            value={formData.password} 
+            onChange={handleChange} 
+            required 
+          />
+        </div>
+        <button type="submit" className="btn btn-primary">Register</button>
       </form>
     </div>
   );
-}
+};
+
+export default Register;
