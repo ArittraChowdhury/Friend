@@ -33,6 +33,12 @@ import App from './App';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+// Get the root element from index.html
 const container = document.getElementById('root');
+
+// Create root for React 18+
 const root = createRoot(container);
+
+// Render the main App component
 root.render(<App />);
+
