@@ -28,9 +28,20 @@ router.post("/register", async (req, res) => {
 // Login route
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+
+  // ✅ 1. Default admin login check
+  if (email === "admin@gmail.com" && password === "admin123") {
+    const token = jwt.sign({ userId: "admin" }, process.env.JWT_SECRET, {
+      expiresIn: "2h",
+    });
+    return res.json({ token, name: "Admin" });
+  }
+
   try {
+    // ✅ 2. Normal DB user login
     const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     const user = result.rows[0];
+
     if (!user) return res.status(400).json({ error: "Invalid credentials" });
     if (user.status === "blocked") return res.status(403).json({ error: "User is blocked" });
 
@@ -46,5 +57,6 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 module.exports = router;

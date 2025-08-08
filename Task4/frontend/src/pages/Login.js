@@ -9,17 +9,26 @@ export default function Login() {
   const [msg, setMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const adminEmail = "admin@gmail.com";
+  const adminPassword = "admin123";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await API.post("/auth/login", form);
       localStorage.setItem("token", res.data.token);
-      navigate("/"); // Redirect to landing page
+
+      // Check if the user is the default admin
+      if (form.email === adminEmail && form.password === adminPassword) {
+        navigate("/admin"); // or whatever your admin route is
+      } else {
+        navigate("/login-success");
+      }
     } catch (err) {
       setMsg(err.response?.data?.error || "Login failed");
     }
   };
+
 
   return (
     <div className="login-container">
